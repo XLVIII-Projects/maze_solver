@@ -112,11 +112,55 @@ class Maze:
             for j in range(self.num_rows):
                 self._cells[i][j].visited = False
 
+    def solve(self, i, j):
+        self._solve_r(i, j)
+
+    def _solve_r(self, i, j):
+        self._animate()
+        self._cells[i][j].visited = True
+        if self._cells[i][j] == self._cells[self.num_cols-1][self.num_rows-1]:
+            return True
+        
+        if i > 0 and self._cells[i-1][j].visited == False and self._cells[i][j].has_left_wall == False:
+            self._cells[i][j].draw_move(self._cells[i-1][j], False)
+            recurse = self._solve_r(i-1, j)
+            if recurse is True:
+                return True
+            else:
+                self._cells[i][j].draw_move(self._cells[i-1][j], True)
+
+        if i < (self.num_cols - 1) and self._cells[i+1][j].visited == False and self._cells[i][j].has_right_wall == False:
+            self._cells[i][j].draw_move(self._cells[i+1][j], False)
+            recurse = self._solve_r(i+1, j)
+            if recurse is True:
+                return True
+            else:
+                self._cells[i][j].draw_move(self._cells[i+1][j], True)
+
+        if j > 0 and self._cells[i][j-1].visited == False and self._cells[i][j].has_top_wall == False:
+            self._cells[i][j].draw_move(self._cells[i][j-1], False)
+            recurse = self._solve_r(i, j-1)
+            if recurse is True:
+                return True
+            else:
+                self._cells[i][j].draw_move(self._cells[i][j-1], True)
+
+        if j < (self.num_rows - 1) and self._cells[i][j+1].visited == False and self._cells[i][j].has_bottom_wall == False:
+            self._cells[i][j].draw_move(self._cells[i][j+1], False)
+            recurse = self._solve_r(i, j+1)
+            if recurse is True:
+                return True
+            else:
+                self._cells[i][j].draw_move(self._cells[i][j+1], True)
+
+        else:
+            return False
+
     def _animate(self):
         if self._win is None:
             return
         self._win.redraw()
-        time.sleep(0.01)
+        time.sleep(0.05)
 
 
         
